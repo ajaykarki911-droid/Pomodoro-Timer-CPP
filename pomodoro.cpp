@@ -70,9 +70,49 @@ public:
     }
 };
 
+// Pomodoro timer class
+class PomodoroTimer
+{
+    private:
+    int seconds;
+    public:
+    PomodoroTimer(int time)
+    {
+        seconds = time;
+    }
+
+    void start()
+    {
+        for (int i = seconds; i > 0; i--)
+        {
+            cout << "\rTime left: " << i << " seconds" ;
+            cout.flush();
+            Sleep(1000);
+        }
+
+        cout << "\nTime is over" << endl;
+        Beep(1000, 500);
+    }
+
+    void start (string message)
+    {
+        cout << "\n" << message << endl;
+        for (int i = seconds; i > 0; i--)
+        {
+            cout << "\rTime left: " << i << " seconds" ;
+            cout.flush();
+            Sleep(1000);
+        }
+
+        cout << "\nTime is over" << endl;
+        Beep(1000, 500);
+    }
+};
 int main()
 {
     int choice;
+    int continueChoice;
+    int pomodoroCount = 0;
     cout << "*** Pomodoro Timer ***" << endl;
 
     cout << "\n1. Default Mode (25/5)" << endl;
@@ -107,5 +147,34 @@ int main()
     {
         customMode.showMode();
     }
+
+    while (true)
+    {
+        int workSeconds;
+        workSeconds = mode->getWorkTime() * 60;
+        PomodoroTimer workTimer(workSeconds);
+        workTimer.start("Work time started");
+
+        int breakSeconds;
+        breakSeconds = mode->getBreakTime() * 60;
+        PomodoroTimer breakTimer(breakSeconds);
+        breakTimer.start("Break time started");
+
+        pomodoroCount++;
+
+        cout <<"\nContinue? "<< endl;
+        cout << "1. Yes" << endl;
+        cout << "0. No" << endl;
+
+        cout << "Enter your choice: ";
+        cin >> continueChoice;
+        if (continueChoice == 0)
+        {
+            break;
+        }
+    }
+
+    cout << "\nSession ended" << endl;
+    cout << "Total Pomodoro sessions completed: " << pomodoroCount << endl;
     return 0;
 }
