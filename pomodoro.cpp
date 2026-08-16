@@ -108,6 +108,30 @@ class PomodoroTimer
         Beep(1000, 500);
     }
 };
+
+//session logger class
+class SessionLogger
+{
+    public:
+    void save(int work, int breakTime, int count)
+    {
+        mkdir("pomodoro_logs");
+        ofstream file("pomodoro_logs/session_log.csv", ios::app);
+        if (!file)
+        {
+            cout << "Error saving session" << endl;
+            return;
+        }
+        time_t now = time(0);
+        tm* currentTime = localtime(&now);
+        file << currentTime->tm_year + 1900 << "-" << currentTime->tm_mon + 1 << "-" << currentTime->tm_mday << ","
+             << currentTime->tm_hour << ":" << currentTime->tm_min << ":" << currentTime->tm_sec << ","
+             << work << "," << breakTime << "," << count << endl;
+        file.close();
+        cout << "Session saved" << endl;
+    }
+};
+
 int main()
 {
     int choice;
@@ -121,8 +145,11 @@ int main()
     cout << "Enter your choice: ";
     cin >> choice;
 
+    // creating mode objects
     DefaultMode defaultMode;
     CustomMode customMode;
+
+    // pointer to TimerMode
     TimerMode* mode;
 
     if (choice == 1)
@@ -168,11 +195,16 @@ int main()
 
         cout << "Enter your choice: ";
         cin >> continueChoice;
+
         if (continueChoice == 0)
         {
             break;
         }
     }
+
+    //save session log
+    SessionLogger logger;
+    logger.save(mode->getWorkTime(), mode->getBreakTime(), pomodoroCount);
 
     cout << "\nSession ended" << endl;
     cout << "Total Pomodoro sessions completed: " << pomodoroCount << endl;
